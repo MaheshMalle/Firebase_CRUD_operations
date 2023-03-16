@@ -15,6 +15,7 @@ class PostScreen extends StatefulWidget {
 class _PostScreenState extends State<PostScreen> {
   //final auth = FirebaseAuth.instance;
   final ref = FirebaseDatabase.instance.ref('Post');
+  final updatecontroller = TextEditingController();
 
   @override
   void initState() {
@@ -53,23 +54,51 @@ class _PostScreenState extends State<PostScreen> {
                                   child: ListTile(
                                     onTap: () {
                                       Navigator.pop(context);
+                                      updatecontroller.text = snapshot
+                                          .child('title')
+                                          .value
+                                          .toString();
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return Container(
+                                              child: AlertDialog(
+                                                title: Text("Update"),
+                                                content: TextFormField(
+                                                  controller: updatecontroller,
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
 
-                                      ref
+                                                         ref
                                           .child(snapshot
                                               .child('id')
                                               .value
                                               .toString())
-                                          .update({'title': 'nice world'})
-                                          .then((value) {})
-                                          .onError((error, stackTrace) {
-                                            Fluttertoast.showToast(
-                                                msg: error.toString(),
-                                                toastLength: Toast.LENGTH_SHORT,
-                                                gravity: ToastGravity.BOTTOM,
-                                                timeInSecForIosWeb: 1,
-                                                backgroundColor: Colors.grey,
-                                                textColor: Colors.white,
-                                                fontSize: 16.0);
+                                          .update({
+                                        'title':
+                                            updatecontroller.text.toString()
+                                      }).then((value) {
+                                        updatecontroller.text = "";
+                                      }).onError(
+                                        (error, stackTrace) {
+                                          Fluttertoast.showToast(
+                                              msg: error.toString(),
+                                              toastLength: Toast.LENGTH_SHORT,
+                                              gravity: ToastGravity.BOTTOM,
+                                              timeInSecForIosWeb: 1,
+                                              backgroundColor: Colors.grey,
+                                              textColor: Colors.white,
+                                              fontSize: 16.0);
+                                        },
+                                      );
+                                                      },
+                                                      child: Text("Update")),
+                                                ],
+                                              ),
+                                            );
                                           });
                                     },
                                     leading: Icon(Icons.edit),

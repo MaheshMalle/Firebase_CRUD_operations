@@ -52,6 +52,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                     'title': postController.text.toString(),
                     'id': id,
                   }).then((value) {
+                    postController.text = "";
                     Fluttertoast.showToast(
                         msg: "Post added!",
                         toastLength: Toast.LENGTH_SHORT,
@@ -65,6 +66,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                       loading = false;
                     });
                   }).onError((error, stackTrace) {
+                    postController.text = "";
                     Fluttertoast.showToast(
                         msg: error.toString(),
                         toastLength: Toast.LENGTH_SHORT,
